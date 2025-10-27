@@ -44,10 +44,10 @@ arch-chroot /mnt echo "arch" > /etc/hostname
 
 # Configuring user
 arch-chroot /mnt pacman -S sudo
-arch-chroot /mnt echo "root:$root_password" | chpasswd
+arch-chroot /mnt bash -c "echo 'root:$root_password' | chpasswd"
 arch-chroot /mnt useradd -m -G wheel -s /bin/bash $username
-arch-chroot /mnt echo '%wheel ALL=(ALL:ALL) ALL' | sudo tee -a /etc/sudoers > /dev/null
-arch-chroot /mnt echo "$username:$password" | chpasswd
+arch-chroot /mnt bash -c "echo '%wheel ALL=(ALL:ALL) ALL' | sudo tee -a /etc/sudoers > /dev/null"
+arch-chroot /mnt bash -c "echo '$username:$password' | chpasswd"
 
 # Installing Bootloader
 arch-chroot /mnt pacman -S grub efibootmgr
