@@ -1,5 +1,15 @@
 #!/bin/bash
 
+set -xeuo pipefail
+
+pacstrapapps=(
+    base
+    linux
+    linux-firmware
+    amd-ucode
+    networkmanager
+)
+
 # Install Menu
 echo "Set root Password:"
 read root_password
@@ -17,43 +27,43 @@ mount --mkdir /dev/nvme0n1p1 /mnt/boot
 swapon /dev/nmve0n1p2
 
 # Installing Base System
-pacstrap -K /mnt base linux linux-firmware amd-ucode networkmanager
+pacstrap -K $rootmnt "${pacstrappacs[@]}"
 genfstab -U /mnt > /mnt/etc/fstab
 
 # Configurate System in chroot
-arch-chroot /mnt <<EOF
-    # Starting internet connection
-    systemctl enable NetworkManager
+arch-chroot /mnt
 
-    # Setting locale stuff
-    ln -sf /usr/share/zoneinfo/Europe/Berlin /etc/localtime
-    hwclock --systohc
-    sed -i '/de_DE.UTF-8/s/^#//g' /etc/locale.gen
-    locale-gen
-    echo "LANG=de_DE.UTF-8" > /etc/locale.conf
-    echo "KEYMAP=de-latin1" > /etc/vconsole.conf
-    echo "arch" > /etc/hostname
+# Starting internet connection
+arch-chroot /mnt systemctl enable NetworkManager
 
-    # Configuring user
-    pacman -S sudo
-    echo "root:$root_password" | chpasswd
-    useradd -mG wheel -s /bin/bash $username
-    echo '%wheel ALL=(ALL:ALL) ALL' | sudo tee -a /etc/sudoers > /dev/null
-    echo "$username:$password" | chpasswd
+# Setting locale stuff
+arch-chroot /mnt ln -sf /usr/share/zoneinfo/Europe/Berlin /etc/localtime
+arch-chroot /mnt hwclock --systohc
+arch-chroot /mnt sed -i '/de_DE.UTF-8/s/^#//g' /etc/locale.gen
+arch-chroot /mnt locale-gen
+arch-chroot /mnt echo "LANG=de_DE.UTF-8" > /etc/locale.conf
+arch-chroot /mnt echo "KEYMAP=de-latin1" > /etc/vconsole.conf
+arch-chroot /mnt echo "arch" > /etc/hostname
 
-    # Installing Bootloader
-    pacman -S grub efibootmgr
-    grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
-    grub-mkconfig -o /boot/grub/grub.cfg
+# Configuring user
+arch-chroot /mnt pacman -S sudo
+arch-chroot /mnt echo "root:$root_password" | chpasswd
+arch-chroot /mnt useradd -mG wheel -s /bin/bash $username
+arch-chroot /mnt echo '%wheel ALL=(ALL:ALL) ALL' | sudo tee -a /etc/sudoers > /dev/null
+arch-chroot /mnt echo "$username:$password" | chpasswd
 
-    # Installing Essential Software
-    pacman -S gdm gnome
+# Installing Bootloader
+arch-chroot /mnt pacman -S grub efibootmgr
+arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
+arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
 
-    # Enabling Essential Services
-    systemctl enable gdm
+# Installing Essential Software
+arch-chroot /mnt pacman -S gdm gnome
 
-    exit
-EOF
+# Enabling Essential Services
+arch-chroot /mnt systemctl enable gdm
+
+arch-chroot /mnt exit
 
 # Unmount and reboot Sytem
 umount -R /mnt
