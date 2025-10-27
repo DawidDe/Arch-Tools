@@ -27,7 +27,7 @@ mount --mkdir /dev/nvme0n1p1 /mnt/boot
 swapon /dev/nvme0n1p2
 
 # Installing Base System
-pacstrap -K /mnt "${pacstrappacs[@]}"
+pacstrap -K /mnt "${pacstrapapps[@]}"
 genfstab -U /mnt >> /mnt/etc/fstab
 
 # Configurate System in chroot
