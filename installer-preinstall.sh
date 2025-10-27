@@ -30,9 +30,6 @@ swapon /dev/nvme0n1p2
 pacstrap -K /mnt "${pacstrapapps[@]}"
 genfstab -U /mnt >> /mnt/etc/fstab
 
-# Configurate System in chroot
-arch-chroot /mnt
-
 # Starting internet connection
 arch-chroot /mnt systemctl enable NetworkManager
 
