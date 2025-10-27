@@ -9,10 +9,12 @@ echo "Set password for $username"
 read password
 
 # Prepare Partitions
-mkfs.fat -F 32 /dev/nvme0n1p5
-mkfs.ext4 /dev/nvme0n1p6
-mount /dev/nvme0n1p6 /mnt
-mount --mkdir /dev/nvme0n1p5 /mnt/boot
+mkfs.fat -F 32 /dev/nvme0n1p
+mkswap /dev/nvme0n1p2
+mkfs.ext4 /dev/nvme0n1p3
+mount /dev/nvme0n1p3 /mnt
+mount --mkdir /dev/nvme0n1p1 /mnt/boot
+swapon /dev/nmve0n1p2
 
 # Installing Base System
 pacstrap -K /mnt base linux linux-firmware amd-ucode networkmanager
@@ -20,6 +22,9 @@ genfstab -U /mnt > /mnt/etc/fstab
 
 # Configurate System in chroot
 arch-chroot /mnt <<EOF
+    # Starting internet connection
+    systemctl enable NetworkManager
+
     # Setting locale stuff
     ln -sf /usr/share/zoneinfo/Europe/Berlin /etc/localtime
     hwclock --systohc
@@ -42,14 +47,14 @@ arch-chroot /mnt <<EOF
     grub-mkconfig -o /boot/grub/grub.cfg
 
     # Installing Essential Software
-    pacman -S gdm hyprland hyprpaper kitty git chromium nano spotify-launcher
+    pacman -S gdm gnome
 
     # Enabling Essential Services
-    systemctl enable NetworkManager
     systemctl enable gdm
 
     exit
 EOF
 
+# Unmount and reboot Sytem
 umount -R /mnt
 reboot now
