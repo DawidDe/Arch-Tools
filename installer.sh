@@ -2,7 +2,7 @@
 
 set -xeuo pipefail
 
-basepapps=(
+baseapps=(
     base
     linux
     linux-firmware
@@ -53,13 +53,17 @@ bloatapps=(
     epiphany
 )
 
+clear
+
 # Install Menu
 echo "Set root Password:"
-read root_password
+read -s root_password
+clear
 echo "Set username:"
 read username
+clear
 echo "Set password for $username"
-read password
+read -s password
 
 # Prepare Partitions
 mkfs.fat -F 32 /dev/nvme0n1p1
@@ -79,16 +83,16 @@ arch-chroot /mnt systemctl enable NetworkManager
 # Setting locale stuff
 arch-chroot /mnt ln -sf /usr/share/zoneinfo/Europe/Berlin /etc/localtime
 arch-chroot /mnt hwclock --systohc
-arch-chroot /mnt sed -i '/de_DE.UTF-8/s/^#//g' /etc/locale.gen
+sed -i '/de_DE.UTF-8/s/^#//g' /mnt/etc/locale.gen
 arch-chroot /mnt locale-gen
-arch-chroot /mnt echo "LANG=de_DE.UTF-8" > /etc/locale.conf
-arch-chroot /mnt echo "KEYMAP=de-latin1" > /etc/vconsole.conf
-arch-chroot /mnt echo "arch" > /etc/hostname
+echo "LANG=de_DE.UTF-8" > /mnt/etc/locale.conf
+echo "KEYMAP=de-latin1" > /mnt/etc/vconsole.conf
+echo "arch" > /mnt/etc/hostname
 
 # Configuring user
 arch-chroot /mnt bash -c "echo 'root:$root_password' | chpasswd"
 arch-chroot /mnt useradd -m -G wheel -s /bin/bash $username
-arch-chroot /mnt bash -c "echo '%wheel ALL=(ALL:ALL) ALL' | sudo tee -a /etc/sudoers > /dev/null"
+echo '%wheel ALL=(ALL:ALL) ALL' | tee -a /mnt/etc/sudoers > /dev/null
 arch-chroot /mnt bash -c "echo '$username:$password' | chpasswd"
 
 # Installing Bootloader
@@ -96,8 +100,8 @@ arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot --bootlo
 arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
 
 # Configuring System Apps
-sudo pacman -Syu --noconfirm "${systemapps[@]}"
-sudo pacman -Rns --noconfirm "${bloatapps[@]}"
+arch-chroot /mnt pacman -Syu --noconfirm "${systemapps[@]}"
+arch-chroot /mnt pacman -Rns --noconfirm "${bloatapps[@]}"
 
 # Enabling Essential Services
 arch-chroot /mnt systemctl enable gdm
