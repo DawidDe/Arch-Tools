@@ -15,6 +15,9 @@ baseapps=(
 )
 
 systemapps=(
+    bluez
+    bluez-utils
+    gnome-bluetooth
     pipewire-jack
     gnome
     git
@@ -42,6 +45,7 @@ bloatapps=(
     gnome-logs
     gnome-disk-utility
     gnome-system-monitor
+    gnome-user-docs
     loupe
     malcontent
     papers
@@ -51,6 +55,7 @@ bloatapps=(
     baobab
     decibels
     epiphany
+    yelp
 )
 
 clear
@@ -97,6 +102,7 @@ arch-chroot /mnt bash -c "echo '$username:$password' | chpasswd"
 
 # Installing Bootloader
 arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
+sed -i '/GRUB_DISABLE_OS_PROBER=false/s/^#//g' /mnt/etc/default/grub
 arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
 
 # Enable multilib repo
@@ -107,8 +113,19 @@ sed -i '\|Include = /etc/pacman.d/mirrorlist|s/^#//g' /mnt/etc/pacman.conf
 arch-chroot /mnt pacman -Syu --noconfirm "${systemapps[@]}"
 arch-chroot /mnt pacman -Rns --noconfirm "${bloatapps[@]}"
 
-# Enabling Essential Services
+# Cleanup app icons
+rm /mnt/usr/share/applications/bvnc.desktop
+rm /mnt/usr/share/applications/bssh.desktop
+rm /mnt/usr/share/applications/avahi-discover.desktop
+rm /mnt/usr/share/applications/qv4l2.desktop
+rm /mnt/usr/share/applications/qvidcap.desktop
+rm /mnt/usr/share/applications/electron36.desktop
+rm /mnt/usr/share/applications/electron37.desktop
+rm /mnt/usr/share/applications/org.gnome.Evince.desktop
+
+# Enabling System Services
 arch-chroot /mnt systemctl enable gdm
+arch-chroot /mnt systemctl enable bluetooth
 
 # Unmount and reboot Sytem
 umount -R /mnt
