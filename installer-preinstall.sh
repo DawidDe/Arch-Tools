@@ -50,8 +50,10 @@ arch-chroot /mnt bash -c "echo '%wheel ALL=(ALL:ALL) ALL' | sudo tee -a /etc/sud
 arch-chroot /mnt bash -c "echo '$username:$password' | chpasswd"
 
 # Installing Bootloader
-arch-chroot /mnt pacman -S grub efibootmgr
+arch-chroot /mnt pacman -S grub efibootmgr os-prober
 arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
+arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
+arch-chroot /mnt sed -i 's/^#GRUB_DISABLE_OS_PROBER=false/GRUB_DISABLE_OS_PROBER=false' /etc/default/grub
 arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
 
 # Installing Essential Software
