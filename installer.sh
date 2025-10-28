@@ -99,6 +99,10 @@ arch-chroot /mnt bash -c "echo '$username:$password' | chpasswd"
 arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
 arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
 
+# Enable multilib repo
+sed -i '/\[multilib\]/s/^#//g' /mnt/etc/pacman.conf
+sed -i '\|Include = /etc/pacman.d/mirrorlist|s/^#//g' /mnt/etc/pacman.conf
+
 # Configuring System Apps
 arch-chroot /mnt pacman -Syu --noconfirm "${systemapps[@]}"
 arch-chroot /mnt pacman -Rns --noconfirm "${bloatapps[@]}"
