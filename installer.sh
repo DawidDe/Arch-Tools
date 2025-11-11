@@ -14,22 +14,48 @@ baseapps=(
     os-prober
 )
 
-systemapps=(
+nativeapps=(
+    # Essential Tools
     bluez
     bluez-utils
     gnome-bluetooth
     pipewire-jack
     gnome
-    git
+    flatpak
+
+    # General Tools
     nano
     chromium
-    discord
-    steam
-    code
-    spotify-launcher
-    bitwarden
-    vlc
     obs-studio
+    vlc
+    bitwarden
+    libreoffice-fresh
+
+    # Dev Tools
+    git
+    code
+    kubectl
+    talosctl
+
+    # Gaming Tools
+    steam
+    lutris
+)
+
+flatpakapps=(
+    # General Tools
+    com.discordapp.Discord
+    com.spotify.Client
+    cafe.avery.Delfin
+
+    # Dev Tools
+    com.termius.Termius
+
+    # Gaming Tools
+    app.twintaillauncher.ttl
+
+    # Security Tools
+    com.github.tchx84.Flatseal
 )
 
 bloatapps=(
@@ -110,7 +136,8 @@ sed -i '/\[multilib\]/s/^#//g' /mnt/etc/pacman.conf
 sed -i '\|Include = /etc/pacman.d/mirrorlist|s/^#//g' /mnt/etc/pacman.conf
 
 # Configuring System Apps
-arch-chroot /mnt pacman -Syu --noconfirm "${systemapps[@]}"
+arch-chroot /mnt pacman -Syu --noconfirm "${nativeapps[@]}"
+arch-chroot /mnt flatpak install flathub -y "${flatpakapps}"
 arch-chroot /mnt pacman -Rns --noconfirm "${bloatapps[@]}"
 
 # Cleanup app icons
