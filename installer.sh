@@ -25,7 +25,6 @@ nativeapps=(
 
     # General Tools
     nano
-    chromium
     obs-studio
     vlc
     bitwarden
@@ -137,7 +136,9 @@ sed -i '\|Include = /etc/pacman.d/mirrorlist|s/^#//g' /mnt/etc/pacman.conf
 
 # Configuring System Apps
 arch-chroot /mnt pacman -Syu --noconfirm "${nativeapps[@]}"
-arch-chroot /mnt flatpak install flathub -y "${flatpakapps}"
+for app in "${flatpakapps[@]}"; do
+  arch-chroot /mnt flatpak install flathub -y "$app"
+done
 arch-chroot /mnt pacman -Rns --noconfirm "${bloatapps[@]}"
 
 # Cleanup app icons
@@ -153,6 +154,7 @@ rm /mnt/usr/share/applications/org.gnome.Evince.desktop
 # Enabling System Services
 arch-chroot /mnt systemctl enable gdm
 arch-chroot /mnt systemctl enable bluetooth
+arch-chroot /mnt systemctl enable pcscd
 
 # Unmount and reboot Sytem
 umount -R /mnt
