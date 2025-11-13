@@ -94,6 +94,13 @@ read username
 clear
 echo "Set password for $username"
 read -s password
+clear
+echo "Set git name:"
+read git-name
+clear
+echo "Set git email:"
+read git-email
+clear
 
 # Prepare Partitions
 mkfs.fat -F 32 /dev/nvme0n1p1
@@ -155,6 +162,10 @@ rm /mnt/usr/share/applications/org.gnome.Evince.desktop
 arch-chroot /mnt systemctl enable gdm
 arch-chroot /mnt systemctl enable bluetooth
 arch-chroot /mnt systemctl enable pcscd
+
+# Configuring Git
+arch-chroot /mnt git config --global user.name "$git-name"
+arch-chroot /mnt git config --global user.email $git-email
 
 # Unmount and reboot Sytem
 umount -R /mnt
