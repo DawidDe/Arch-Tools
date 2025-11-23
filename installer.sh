@@ -55,6 +55,7 @@ flatpakapps=(
 
     # Security Tools
     com.github.tchx84.Flatseal
+    com.yubico.yubioath
 )
 
 bloatapps=(
