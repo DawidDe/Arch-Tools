@@ -83,6 +83,7 @@ bloatapps=(
     yelp
 )
 
+loadkeys de-latin1
 clear
 
 # Install Menu
@@ -96,10 +97,10 @@ echo "Set password for $username"
 read -s password
 clear
 echo "Set git name:"
-read git-name
+read git_name
 clear
 echo "Set git email:"
-read git-email
+read git_email
 clear
 
 # Prepare Partitions
@@ -164,8 +165,8 @@ arch-chroot /mnt systemctl enable bluetooth
 arch-chroot /mnt systemctl enable pcscd
 
 # Configuring Git
-arch-chroot /mnt git config --global user.name "$git-name"
-arch-chroot /mnt git config --global user.email $git-email
+arch-chroot /mnt git config --global user.name "$git_name"
+arch-chroot /mnt git config --global user.email $git_email
 
 # Unmount and reboot Sytem
 umount -R /mnt
