@@ -169,6 +169,13 @@ arch-chroot /mnt systemctl enable pcscd
 arch-chroot /mnt git config --global user.name "$git_name"
 arch-chroot /mnt git config --global user.email $git_email
 
+# Configure kubelogin
+arch-chroot /mnt curl -L -o kubelogin.zip https://github.com/int128/kubelogin/releases/download/v1.34.2/kubelogin_linux_amd64.zip
+arch-chroot /mnt unzip kubelogin.zip
+arch-chroot /mnt rm -r kubelogin.zip README.md LICENSE
+arch-chroot /mnt chmod +x kubelogin
+arch-chroot /mnt mv kubelogin /bin/kubectl-oidc_login
+
 # Unmount and reboot Sytem
 umount -R /mnt
 reboot now
