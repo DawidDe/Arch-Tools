@@ -15,16 +15,28 @@ baseapps=(
 )
 
 nativeapps=(
-    # Essential Tools
+    # Core
     hyprland
     xdg-desktop-portal-hyprland
     gdm
+    polkit
+
+    # Audio
     pipewire
     pipewire-audio
     pipewire-alsa
     pipewire-pulse
     wireplumber
-    polkit
+
+    # Bluetooth
+    bluez
+    bluez-utils
+
+    # Yubikey
+    pscslite
+
+    # Printing
+    cups
 
     # General Tools
     nano
