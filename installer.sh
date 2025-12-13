@@ -22,6 +22,7 @@ nativeapps=(
     pipewire-jack
     gnome
     flatpak
+    cups
 
     # General Tools
     nano
@@ -29,6 +30,7 @@ nativeapps=(
     vlc
     bitwarden
     libreoffice-fresh
+    discord
 
     # Dev Tools
     git
@@ -43,7 +45,6 @@ nativeapps=(
 
 flatpakapps=(
     # General Tools
-    com.discordapp.Discord
     com.spotify.Client
     cafe.avery.Delfin
 
@@ -164,6 +165,7 @@ rm /mnt/usr/share/applications/org.gnome.Evince.desktop
 arch-chroot /mnt systemctl enable gdm
 arch-chroot /mnt systemctl enable bluetooth
 arch-chroot /mnt systemctl enable pcscd
+arch-chroot /mnt systemctl enable cups
 
 # Configuring Git
 arch-chroot /mnt git config --global user.name "$git_name"
