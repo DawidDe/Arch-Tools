@@ -105,7 +105,7 @@ sed -i '/\[multilib\]/s/^#//g' /mnt/etc/pacman.conf
 sed -i '\|Include = /etc/pacman.d/mirrorlist|s/^#//g' /mnt/etc/pacman.conf
 
 # Configuring System Apps
-arch-chroot /mnt pacman -Rns --noconfirm "${bloatapps[@]}"
+arch-chroot /mnt pacman -Syu --noconfirm "${nativeapps[@]}"
 
 # Enabling System Services
 arch-chroot /mnt systemctl enable gdm
