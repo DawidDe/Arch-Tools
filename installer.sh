@@ -16,13 +16,15 @@ baseapps=(
 
 nativeapps=(
     # Essential Tools
-    bluez
-    bluez-utils
-    gnome-bluetooth
-    pipewire-jack
-    gnome
-    flatpak
-    cups
+    hyprland
+    xdg-desktop-portal-hyprland
+    gdm
+    pipewire
+    pipewire-audio
+    pipewire-alsa
+    pipewire-pulse
+    wireplumber
+    polkit
 
     # General Tools
     nano
@@ -41,48 +43,6 @@ nativeapps=(
     # Gaming Tools
     steam
     lutris
-)
-
-flatpakapps=(
-    # General Tools
-    com.spotify.Client
-    cafe.avery.Delfin
-
-    # Dev Tools
-    com.termius.Termius
-
-    # Gaming Tools
-    app.twintaillauncher.ttl
-
-    # Security Tools
-    com.github.tchx84.Flatseal
-    com.yubico.yubioath
-)
-
-bloatapps=(
-    gnome-contacts
-    gnome-weather
-    gnome-clocks
-    gnome-maps
-    gnome-music
-    gnome-calendar
-    gnome-characters
-    gnome-tour
-    gnome-font-viewer
-    gnome-logs
-    gnome-disk-utility
-    gnome-system-monitor
-    gnome-user-docs
-    loupe
-    malcontent
-    papers
-    showtime
-    simple-scan
-    snapshot
-    baobab
-    decibels
-    epiphany
-    yelp
 )
 
 loadkeys de-latin1
@@ -145,21 +105,7 @@ sed -i '/\[multilib\]/s/^#//g' /mnt/etc/pacman.conf
 sed -i '\|Include = /etc/pacman.d/mirrorlist|s/^#//g' /mnt/etc/pacman.conf
 
 # Configuring System Apps
-arch-chroot /mnt pacman -Syu --noconfirm "${nativeapps[@]}"
-for app in "${flatpakapps[@]}"; do
-  arch-chroot /mnt flatpak install flathub -y "$app"
-done
 arch-chroot /mnt pacman -Rns --noconfirm "${bloatapps[@]}"
-
-# Cleanup app icons
-rm /mnt/usr/share/applications/bvnc.desktop
-rm /mnt/usr/share/applications/bssh.desktop
-rm /mnt/usr/share/applications/avahi-discover.desktop
-rm /mnt/usr/share/applications/qv4l2.desktop
-rm /mnt/usr/share/applications/qvidcap.desktop
-rm /mnt/usr/share/applications/electron36.desktop
-rm /mnt/usr/share/applications/electron37.desktop
-rm /mnt/usr/share/applications/org.gnome.Evince.desktop
 
 # Enabling System Services
 arch-chroot /mnt systemctl enable gdm
